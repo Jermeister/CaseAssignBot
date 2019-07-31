@@ -84,7 +84,7 @@ def findinguserbyevents(case):
             fromtostring = statuslines[0].split('\'')
             if fromtostring[3] == 'Active':
                 if str(event['sPerson']) is not None:
-                    # print(str(bugevents['ixBug']) + " " + str(event['sPerson']) + " " + "From " + fromtostring[1] + " to " + fromtostring[3])
+                    # print(str(bugevents['ixBug']) + " " + str(event['sPerson']) + " " + " to " + fromtostring[3])
                     return str(event['sPerson'])
 
         # If there is no status change, let's say a case was Active already, because reported internally
@@ -94,7 +94,17 @@ def findinguserbyevents(case):
             fromtostring = statuslines[0].split('\'')
             if fromtostring[3] == 'Unity':
                 if str(event['sPerson']) is not None:
-                    # print(str(bugevents['ixBug']) + " " + str(event['sPerson']) + " " + "From " + fromtostring[1] + " to " + fromtostring[3])
+                    # print(str(bugevents['ixBug']) + " " + str(event['sPerson']) + " " + " to " + fromtostring[3])
+                    return str(event['sPerson'])
+
+    # If we cannot find a person by Status or Category, look for the case opener
+    # Looking for "Opened by"
+    for event in bugevents['events']:
+        s = event['evtDescription']
+        statuslines = [sentence for sentence in s.split('\r\n') if 'Opened by' in sentence]
+        if statuslines:
+                if str(event['sPerson']) is not None:
+                    # print(str(event['sPerson']))
                     return str(event['sPerson'])
 
 
@@ -122,7 +132,7 @@ def findowner(fb, cases):
             # If a person is working
             if person != "Null":
                 print("3 Tester is not Null events giving " + c.ixBug + " to " + name + " id " + person)
-                editcase(fb, c.ixBug, person, "Tester field was not set. If you are a developer, assign this case to your internal QA for the verification. If you are not an owner of this case, assign it to Customer QA Grabbag. Otherwise, please verify. :) #cqa-bots")
+                editcase(fb, c.ixBug, person, "The bot was not sure where to assign this case, so it assigned this to you. If you are a developer, please assign this case to your internal QA for the verification. If you do not have one, assign it to Customer QA Grabbag. Otherwise, please verify. #cqa-bots")
             # If a person is not working anymore
             else:
                 print("4 Tester is Null, giving " + c.ixBug + " to CQA")
@@ -152,7 +162,7 @@ def findowner(fb, cases):
                 # If a person is working
                 if person != "Null":
                     print("7 Tester is not Null events giving " + c.ixBug + " to " + name)
-                    editcase(fb, c.ixBug, person, "Tester field was not set. If you are a developer, assign this case to your internal QA for the verification. If you are not an owner of this case, assign it to Customer QA Grabbag. Otherwise, please verify. :) #cqa-bots")
+                    editcase(fb, c.ixBug, person, "The bot was not sure where to assign this case, so it assigned this to you. If you are a developer, please assign this case to your internal QA for the verification. If you do not have one, assign it to Customer QA Grabbag. Otherwise, please verify. #cqa-bots")
                 # If a person is not working anymore
                 else:
                     print("8 Tester is Null, giving " + c.ixBug + " to CQA")
